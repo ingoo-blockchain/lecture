@@ -1,0 +1,14 @@
+{
+  "name": "ingoo",
+  "version": "1.0.0",
+  "description": "CLI 연습",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "cli": "./index.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
