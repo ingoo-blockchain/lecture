@@ -1,3 +1,5 @@
 module.exports = {
-    testEnvironment:'node'
+    transform: {},
+    rootDir: './',
+    testEnvironment: 'node',
 }

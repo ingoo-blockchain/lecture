@@ -1,5 +1,8 @@
 # Blockchain 구현
 
+```sh
+$ npm install merkle crypto-js hex-to-binary
+```
 
 ## Jest 세팅
 
