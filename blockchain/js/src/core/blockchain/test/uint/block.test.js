@@ -59,6 +59,7 @@ describe('Block', () => {
                 isError: false,
                 value: result.value,
             })
+            
             expect(Buffer.from(result.value, 'hex').length).toBe(32)
         })
 

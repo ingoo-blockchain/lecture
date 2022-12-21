@@ -91,13 +91,7 @@ describe('Chain', () => {
                 erorr: 'error',
             }))
 
-            // expect(chain.addToChain({ data: ['some data'] })).toBeNull()
-            expect(() => chain.addToChain({ data: ['some data'] })).toThrowError(/^error$/)
-            expect(chain).toHaveLength(1)
-        })
-
-        it('should return null if the given block is not an instance of IBlock', () => {
-            // expect(chain.addToChain({ data: ['some data'] })).toBeNull()
+            expect(chain.addToChain({ data: ['some data'] })).toBeNull()
             expect(chain).toHaveLength(1)
         })
     })

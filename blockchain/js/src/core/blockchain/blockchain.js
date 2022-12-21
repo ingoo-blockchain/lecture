@@ -1,11 +1,22 @@
+const config = require('./config')
+
 class BlockChain {
-    // block = Block instance
-    // latestBlocks = Chain instance 최근10개
-    constructor({ Block, Chain, config, genesis }) {
-        const chain = new Chain(genesis)
+    #chain
+    #block
+    constructor({ Block, Chain, blockDI, chainDI }) {
+        const block = new Block(blockDI)
+        chainDI.block = block
+        const chain = new Chain(chainDI)
+
+        this.#chain = chain
+        this.#block = block
     }
 
-    findBlock() {}
+    getChain() {
+        return this.#chain
+    }
 }
 
-module.exports = BlockChain
+const blockchain = new BlockChain(config)
+console.log(blockchain.getChain())
+module.exports = blockchain
