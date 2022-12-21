@@ -79,6 +79,7 @@ class Chain extends Array {
             return this
         } catch (e) {
             console.error(e.meesage)
+            return null
         }
     }
 

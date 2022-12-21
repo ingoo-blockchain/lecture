@@ -96,9 +96,9 @@ class Block extends IBlock {
     }
 
     getDifficulty({
-        height,
-        timestamp,
-        adjustmentDifficulty,
+        height, //
+        timestamp, //
+        adjustmentDifficulty, // adjustmentBlock
         adjustmentTimestamp,
         previousDifficulty,
     }) {
@@ -125,5 +125,8 @@ class Block extends IBlock {
         return { isError: false, value: newBlock }
     }
 }
+
+
+const block = new Block({})
 
 module.exports = Block
