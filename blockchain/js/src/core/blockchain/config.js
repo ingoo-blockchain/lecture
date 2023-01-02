@@ -24,6 +24,8 @@ const chainDI = {
 }
 
 module.exports = {
+    Block,
+    Chain,
     blockDI,
     chainDI,
 }
