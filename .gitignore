@@ -1,3 +1,7 @@
 node_modules
 .DS_Store
 *.mp4
+coverage
+.eslintrc.json
+.prettierrc.json
+package-lock.json
