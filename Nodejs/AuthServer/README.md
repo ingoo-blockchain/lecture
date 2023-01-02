@@ -159,16 +159,32 @@ const path = require('path')
 const Sequelize = require('sequelize')
 
 const env = process.env.NODE_NEV || 'development'
-const config = require(path.join(__dirname, '..', 'config.js'))[env]
-
-const db = {}
+const config = require(path.join(__dirname, '..', 'config.js'))['db'][env]
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config)
 
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+require('./user.model')(sequelize, Sequelize)
 
-module.exports = db
+console.log(sequelize.models.User)
+console.log(typeof sequelize.models.User)
+const user = new sequelize.models.User({
+    userid: 'web7722',
+    username: 'ingoo',
+    userpw: '1234',
+})
+
+sequelize.models.User.create({
+    userid: 'web7722',
+    username: 'ingoo',
+    userpw: '1234',
+}).then((result) => console.log(result))
+
+console.log(user)
+
+module.exports = {
+    sequelize,
+    Sequelize,
+}
 ```
 
 지금까지는 단순하게, sequelize connection 할수있게 환경설정 해준 코드.
@@ -276,8 +292,8 @@ module.exports = (sequelize, DataTypes) => {
 
 require('./user.model')(sequelize, Sequelize)
 
-console.log(sequelize.models.User)
-console.log(typeof sequelize.models.User)
+console.log(sequelize.models.User) // User
+console.log(typeof sequelize.models.User) // Function
 const user = new sequelize.models.User({
     userid: 'web7722',
     username: 'ingoo',
@@ -291,8 +307,119 @@ sequelize.models.User.create({
 }).then((result) => console.log(result))
 
 console.log(user)
-module.exports = db
+
+module.exports = {
+    sequelize,
+    Sequelize,
+}
 ```
+
+sequelize.define() 호출되면,
+
+define 메서드안에 있던 첫번째 인자값이.
+
+sequelize.models.[첫번째 인자값] 내용을 생성됩니다.
+저는 `User` 라고 했으니 `sequelize.models.User` 이겠죠 ?
+
+console.log 를 찍어보니 User라고 달랑 뜹니다.
+순간 원시타입인 `String` 인가 싶었죠 ?
+
+하지만 `console.log(typeof sequelize.models.User)` 를 쳐보니.
+`Function`이 반환되는 것을 보고.
+
+아 함수구나 싶었습니다.
+
+> Javascript 이기 때문에 **일반함수** 또는 **생성자 함수(Class)** 이겠죠 ?
+
+그래서 호출 하고보니
+`new` 키워드 붙혀달라고 error message 를 친절하게 보내주더라구요
+
+이때 이것은 생성자 함수(Class)구나 싶었습니다.
+
+하지만 정적메서드가 있다는 것을 _공식문서_ 를 통해 찾아보았고,
+실행 해봤더니 진행 되었습니다.
+
+```js
+sequelize.models.User.create({
+    userid: 'web7722',
+    username: 'ingoo',
+    userpw: '1234',
+}).then((result) => console.log(result))
+```
+
+User 객체에 내용을 채워주더라구요, 그리고 **console** 에
+SQL 구문도 생기는 것을 확인 할 수 있었습니다.
+
+### models/index.js 완성본
+
+```js
+require('dotenv')
+const path = require('path')
+const Sequelize = require('sequelize')
+
+const env = process.env.NODE_NEV || 'development'
+const config = require(path.join(__dirname, '..', 'config.js'))['db'][env]
+
+const sequelize = new Sequelize(config.database, config.username, config.password, config)
+
+require('./user.model')(sequelize, Sequelize)
+
+module.exports = {
+    sequelize,
+    Sequelize,
+}
+```
+
+이렇게 완성되긴 했지만..
+models directory 에 xxx.model.js 가 생성 될 때마다 코드를 작성하면 귀찮아 질거 같습니다.
+
+왜냐하면 모델 즉 테이블이 추가될때마다, 저메서드를 호출해야 해서 `fs`를 활용하여 구현해보도록 하죠.
+
+**models/index.js**
+
+```js
+fs.readdirSync(__dirname)
+    .filter((v) => v.indexOf('model') !== -1)
+    .forEach((file) => {
+        require(path.join(__dirname, file))(sequelize, Sequelize)
+    })
+```
+
+저는 파일명에 model 이있는 경우에만 require 하도록 작성했습니다.
+
+### sync 하기
+
+마지막으로 `RDBMS`와 `Object`를 같은 값으로 하기위해, Sync를 하도록 하겠습니다.
+Sync를 할려면, 최초에 한번만 실행하면 되기 때문에,
+
+서버를 시작하는 `Server.js` 에서 `listen` 안에 작성하도록 하겠습니다.
+
+**server.js**
+
+```js
+require('dotenv')
+const app = require('./app')
+const PORT = process.env.SERVER_PORT || 3000
+const { sequelize } = require('./models')
+
+app.listen(PORT, async () => {
+    await sequelize.sync({ force: false })
+    console.log(`Running on http://localhost:${PORT}`)
+})
+```
+
+이후 `node server` 를 실행하면
+
+```sh
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'User' AND TABLE_SCHEMA = 'backend'
+Executing (default): CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER NOT NULL auto_increment , `userid` VARCHAR(30) NOT NULL UNIQUE, `userpw` VARCHAR(64) NOT NULL, `username` VARCHAR(30) NOT NULL, `gender` VARCHAR(2) DEFAULT '남자', PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `User` FROM `backend`
+Running on http://localhost:3000
+```
+
+이러한 console 을 확인 할 수 있습니다.
+
+이제 DataBase 설정은 완료 되었습니다.
 
 ## Auth directory
 
