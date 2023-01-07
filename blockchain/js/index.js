@@ -1,1 +1,1 @@
-process.argv
+process.arg
