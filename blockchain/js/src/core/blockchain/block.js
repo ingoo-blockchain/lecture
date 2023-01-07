@@ -126,7 +126,4 @@ class Block extends IBlock {
     }
 }
 
-
-const block = new Block({})
-
 module.exports = Block

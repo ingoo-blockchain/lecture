@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node server.js",
         "test:unit": "jest --detectOpenHandles \"unit/.*\\.test\\.js\"",
-        "test:inter": "jest --detectOpenHandles \"intergation/.*\\.test\\.js\"",
+        "test:inter": "jest --detectOpenHandles \"intergration/.*\\.test\\.js\"",
         "coverage": "jest --coverage"
     },
     "keywords": [],
