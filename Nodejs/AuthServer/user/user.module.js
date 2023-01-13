@@ -14,11 +14,11 @@ const userController = require('./user.controller')
 // const router = require('express').Router()
 // const Modules = require('../lib/modules')
 
-// const jwt = new JWT({ crypto })
+const jwt = new JWT({ crypto })
 
-// const repository = new userRepository({ User })
-// const service = new userService({ userRepository: repository, jwt })
-// const controller = new userController({ userService: service })
+const repository = new userRepository({ User })
+const service = new userService({ userRepository: repository, jwt })
+const controller = new userController({ userService: service })
 
 // module.exports = new Modules({
 //     controller,
