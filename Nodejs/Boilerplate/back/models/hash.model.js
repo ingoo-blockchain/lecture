@@ -1,10 +1,10 @@
 module.exports = (sequelize, Sequelize) => {
-    class Hashtag extends Sequelize.Model {
+    class Hash extends Sequelize.Model {
         static initialize() {
             this.init(
                 {
                     tag: {
-                        type: Sequelize.STRING(15),
+                        type: Sequelize.STRING(30),
                         allowNull: false,
                         primaryKey: true,
                     },
@@ -17,12 +17,11 @@ module.exports = (sequelize, Sequelize) => {
 
         static associate(models) {
             this.belongsToMany(models.Board, {
-                through: 'board_hashtag',
-                as: 'board',
+                through: 'Hashtag',
+                foreignKey: 'tag',
             })
         }
     }
 
-    Hashtag.initialize()
-    return Hashtag
+    Hash.initialize()
 }

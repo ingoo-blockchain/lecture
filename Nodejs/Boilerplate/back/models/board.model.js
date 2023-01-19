@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     class Board extends Sequelize.Model {
         static initialize() {
-            return this.init(
+            this.init(
                 {
                     subject: {
                         type: Sequelize.STRING(100),
@@ -9,12 +9,11 @@ module.exports = (sequelize, Sequelize) => {
                     },
                     content: {
                         type: Sequelize.TEXT,
-                        allowNull: false,
+                        allowNull: true,
                     },
-                    registerDate: {
+                    createdAt: {
                         type: Sequelize.DATE,
-                        allowNull: false,
-                        defaultValue: Sequelize.fn('now'),
+                        defaultValue: sequelize.fn('now'),
                     },
                     hit: {
                         type: Sequelize.INTEGER,
@@ -32,14 +31,21 @@ module.exports = (sequelize, Sequelize) => {
                 foreignKey: 'userid',
             })
 
-            this.belongsToMany(models.Hashtag, {
-                through: 'board_hashtag',
-                foreignKey: 'id',
-                as: 'tag',
+            this.hasMany(models.Comment, {
+                foreignKey: 'boardid',
+            })
+
+            this.belongsToMany(models.User, {
+                through: 'Liked',
+                foreignKey: 'boardid',
+            })
+
+            this.belongsToMany(models.Hash, {
+                through: 'Hashtag',
+                foreignKey: 'boardid',
             })
         }
     }
 
     Board.initialize()
-    return Board
 }
