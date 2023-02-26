@@ -1,0 +1,16 @@
+{
+  "name": "step3",
+  "version": "1.0.0",
+  "description": "Webpack plugins 는  input 이후  output 나오기전에 실행됩니다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
