@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <form method="post" action="/upload" enctype="multipart/form-data">
+            <input type="text" name="subject" />
+            <input type="file" name="upload" multiple />
+            <input type="submit" value="전송" />
+        </form>
+
+        <script type="text/javascript">
+            const frm = document.querySelector('form')
+            frm.addEventListener('submit', async (e) => {
+                e.preventDefault()
+                const { subject, upload } = e.target
+                console.log(e.target)
+                // body에 넣을 내용 만들기
+                const formData = new FormData(e.target)
+                // formData.append('upload', upload.files[0]) // single
+                // console.log(upload.files)
+                // formData.append('upload', upload.files[0])
+                // formData.append('subject', subject.value)
+
+                const response = await axios.post('http://localhost:3000/upload', formData)
+            })
+        </script>
+    </body>
+</html>
