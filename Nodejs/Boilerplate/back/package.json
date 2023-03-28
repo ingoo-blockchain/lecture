@@ -1,18 +1,28 @@
 {
-  "name": "back",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "mysql2": "^3.0.0",
-    "sequelize": "^6.28.0"
-  }
+    "name": "back",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node server",
+        "test:unit": "jest",
+        "test:integration": "jest -c jest.config.inter.js",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "mysql2": "^3.0.0",
+        "sequelize": "^6.28.0"
+    },
+    "devDependencies": {
+        "dotenv": "^16.0.3",
+        "jest": "^29.3.1",
+        "node-mocks-http": "^1.12.1",
+        "supertest": "^6.3.3"
+    }
 }
