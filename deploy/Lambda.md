@@ -36,6 +36,7 @@ AWS Lambda의 경우, 프로비저닝이 필요 없으며, 사용자는 자신�
 
 -   1. 배포를 진행할 간단한 서버 구현
 -   2. 서버리스 아키텍처를 사용함에 따라, serverless-http 사용
+-   3. AWS CLI 로 Lambda 만들기
 
 ### 1. 배포를 진행할 간단한 서버
 
@@ -88,3 +89,89 @@ app.get('/test', (req, res) => {
 
 module.exports.handler = serverless(app)
 ```
+
+## 3. AWS CLI 로 Lambda 만들기
+
+**목차**
+
+-   3.1 AWS CLI 설치 여부
+-   3.2 policy.json 파일 생성 (AWS 정책)
+-   3.3 ROLE 생성
+-   3.4 Application 압축 (Server.js 파일 압축)
+-   3.5 Lambda 함수 생성 및 배포
+-   3.6 Lambda 함수 호출 및 결과 로그 확인
+
+### 3.1 AWS CLI 설치 여부 확인
+
+```sh
+aws --version  # Version 이 나오면 설치가 잘되었다는 뜻
+aws configure list # IAM 설정도 끝났다는 뜻!
+```
+
+AWS Lambda 를 생성 할 때는
+`AWS Lambda` 라는 명령어가 존재합니다.
+
+## 3.2 AWS VPC 확인하기
+
+```sh
+aws ec2 describe-vpcs
+
+aws ec2 describe-vpcs --query 'Vpcs[*].Tags[?Key==`Name`].Value[]' --output text
+aws ec2 describe-vpcs --query 'Vpcs[*].[Tags[?Key==`Name`].Value, VpcId]' --output json
+# 해당 VPC 이하 $vpc_id 라고 표현함
+```
+
+## 3.2 보안 그룹 생성하기
+
+```sh
+aws ec2 create-security-group --group-name <GROUP_NAME> --description "<GROUP_DESCRIPTION>" --vpc-id <VPC_ID>
+
+aws ec2 create-security-group --group-name develrocket-front-sg --description "develrocket front security group" --vpc-id vpc-09f1e3c703b9cea74
+
+# 이후 생성되는 security-group id 메모
+# {
+#    "GroupId": "sg-045fbd18e9c95cd9a"
+# }
+
+aws ec2 authorize-security-group-ingress --group-id sg-045fbd18e9c95cd9a --ip-permissions IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges='[{CidrIp=0.0.0.0/0}]' IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges='[{CidrIp=0.0.0.0/0}]'
+
+## 이름 지정
+
+aws ec2 create-tags --resources sg-045fbd18e9c95cd9a --tags Key=Name,Value=develrocket_front_security_group
+```
+
+## 3.3 IAM arn 값 구하기
+
+```sh
+aws iam list-users --query "Users[].Arn"
+```
+
+## 3.3 Lambda 만들기
+
+`aws lambda create-function`
+
+-   --function-name: 생성할 Lambda 함수의 이름을 지정합니다.
+-   --runtime: Lambda 함수에서 사용할 런타임을 지정합니다. 예를 들어, nodejs14.x나 python3.8과 같은 값을 사용할 수 있습니다.
+-   --role: Lambda 함수에서 사용할 IAM 역할의 ARN을 지정합니다. 이 역할은 함수가 사용하는 AWS 리소스에 대한 액세스 권한을 제공합니다.
+-   --handler: Lambda 함수에서 실행할 핸들러의 이름을 지정합니다. 이 핸들러는 "파일명.함수이름" 형식으로 작성됩니다. 예를 들어, index.handler와 같이 작성할 수 있습니다.
+-   --code: Lambda 함수의 코드가 포함된 ZIP 파일의 위치를 지정합니다. S3 버킷에 업로드된 ZIP 파일을 참조하려면, "S3Bucket=버킷이름,S3Key=파일이름.zip"과 같은 형식으로 입력합니다.
+-   --description: Lambda 함수에 대한 설명을 추가합니다.
+-   --timeout: Lambda 함수의 실행 시간 제한을 초 단위로 지정합니다. 이 시간이 초과되면 함수가 중지됩니다.
+-   --memory-size: Lambda 함수에서 사용할 메모리 크기를 MB 단위로 지정합니다. 높은 메모리 크기는 더 높은 CPU 할당량을 제공합니다.
+-   --publish: Lambda 함수를 배포 가능한 버전으로 만듭니다.
+-   --tags: Lambda 함수에 연결할 태그를 지정합니다.
+-   --vpc-config: Lambda 함수를 실행할 때 사용할 VPC 구성을 지정합니다. 이 구성은 Lambda 함수가 사용할 서브넷 및 보안 그룹을 포함합니다.
+-   --environment: Lambda 함수에서 사용할 환경 변수를 지정합니다. 이 변수는 Lambda 함수에서 참조할 수 있습니다.
+    옵션 외에도, --zip-file 옵션을 사용하여 ZIP 파일이 포함된 로컬 경로를 직접 지정할 수도 있습니다. --zip-file 옵션을 사용하는 경우, --code 옵션은 무시됩니다.
+
+여기서 필요한 부분은
+
+`--function-name`, `--runtime` , `--region`, `--handle`, `--code`, `--role`
+
+```
+aws lambda create-function --function-name develrocket-front-lambda --runtime nodejs16.x --handler server.handler --code S3Bucket=develrocket-bucket-front,S3Key=develrocket/front.zip --role arn:aws:iam::363239913720:role/develrocket-front-lambda
+```
+
+
+실행시켜보기
+
