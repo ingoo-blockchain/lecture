@@ -171,6 +171,23 @@ aws iam list-users --query "Users[].Arn"
 aws lambda create-function --function-name develrocket-front-lambda --runtime nodejs16.x --handler server.handler --code S3Bucket=develrocket-bucket-front,S3Key=develrocket/front.zip --role arn:aws:iam::363239913720:role/develrocket-front-lambda
 ```
 
+## 코드 업데이트
 
-실행시켜보기
+```
+aws lambda update-function-code \
+--function-name develrocket-front-lambda \
+--s3-bucket develrocket-bucket-front \
+--s3-key develrocket/front.zip
+```
 
+
+## 실행시켜보기
+
+```sh
+aws lambda invoke --function-name develrocket-front-lambda response.json
+
+
+aws logs create-log-group --log-group-name /aws/lambda/develrocket-front-lambda
+aws logs filter-log-events --log-group-name /aws/lambda/develrocket-front-lambda --filter-pattern "Exception"
+
+```
