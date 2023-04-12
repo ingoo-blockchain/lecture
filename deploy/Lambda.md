@@ -125,7 +125,6 @@ aws ec2 describe-vpcs --query 'Vpcs[*].[Tags[?Key==`Name`].Value, VpcId]' --outp
 
 ```sh
 aws ec2 create-security-group --group-name <GROUP_NAME> --description "<GROUP_DESCRIPTION>" --vpc-id <VPC_ID>
-
 aws ec2 create-security-group --group-name develrocket-front-sg --description "develrocket front security group" --vpc-id vpc-09f1e3c703b9cea74
 
 # 이후 생성되는 security-group id 메모
@@ -172,6 +171,23 @@ aws iam list-users --query "Users[].Arn"
 aws lambda create-function --function-name develrocket-front-lambda --runtime nodejs16.x --handler server.handler --code S3Bucket=develrocket-bucket-front,S3Key=develrocket/front.zip --role arn:aws:iam::363239913720:role/develrocket-front-lambda
 ```
 
+## 코드 업데이트
 
-실행시켜보기
+```
+aws lambda update-function-code \
+--function-name develrocket-front-lambda \
+--s3-bucket develrocket-bucket-front \
+--s3-key develrocket/front.zip
+```
 
+
+## 실행시켜보기
+
+```sh
+aws lambda invoke --function-name develrocket-front-lambda response.json
+
+
+aws logs create-log-group --log-group-name /aws/lambda/develrocket-front-lambda
+aws logs filter-log-events --log-group-name /aws/lambda/develrocket-front-lambda --filter-pattern "Exception"
+
+```
