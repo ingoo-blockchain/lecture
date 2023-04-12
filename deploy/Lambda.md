@@ -125,7 +125,6 @@ aws ec2 describe-vpcs --query 'Vpcs[*].[Tags[?Key==`Name`].Value, VpcId]' --outp
 
 ```sh
 aws ec2 create-security-group --group-name <GROUP_NAME> --description "<GROUP_DESCRIPTION>" --vpc-id <VPC_ID>
-
 aws ec2 create-security-group --group-name develrocket-front-sg --description "develrocket front security group" --vpc-id vpc-09f1e3c703b9cea74
 
 # 이후 생성되는 security-group id 메모
