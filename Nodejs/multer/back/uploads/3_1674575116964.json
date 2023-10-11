@@ -1,0 +1,15 @@
+{
+  "name": "ingoo NFT",
+  "description": "ingoo NFT description",
+  "image": "https://gateway.pinata.cloud/ipfs/QmVs28uP4MgFMHRrndLDXsoAKMQ4EGjkgFxJUEr1KCPxrU/4/3.jpg",
+  "attributes": [
+    {
+      "trait_type": "Rank",
+      "value": 4
+    },
+    {
+      "trait_type": "Type",
+      "value": 3
+    }
+  ]
+}

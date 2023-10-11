@@ -1,0 +1,15 @@
+{
+    "root": true,
+    "ignorePatterns": ["node_modules/", "build/"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+        "prettier/prettier": "error",
+        "no-console": "off"
+    }
+}

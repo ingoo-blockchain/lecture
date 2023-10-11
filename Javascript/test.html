@@ -1,0 +1,28 @@
+<script>
+    const arr = [1, 2, 3, 4, 5]
+    console.dir(arr)
+</script>
+
+## 이터러블 / 이터레이터 프로토콜 - 이터러블 : [Symbol.itertor]() 이녀석을 가지고있으면 - 이터레이터
+: [Symbol.itertor]() 호출된 리턴값이 { value, done } - 이터러블/ 이터레이터 프로토콜
+
+<script>
+    const set = new Set(arr)
+    console.dir(set)
+
+    console.log(set[Symbol.iterator]())
+</script>
+
+<script>
+    arr[Symbol.iterator]
+    const iterator = arr[Symbol.iterator]()
+    iterator.next()
+    // [1,2,3,4,5]
+
+    const obj = {
+        name: 'ingoo',
+        subject: 'asdf',
+    }
+
+    console.dir(obj)
+</script>
